@@ -14,8 +14,10 @@ docker exec -i mysql_replication_master_1 mysql -uroot -p${MY_ROOT_PASSWORD} <<<
 
 ```
 MY_STATUS=$(docker exec -i mysql_replication_master_1 mysql -uroot -p${MY_ROOT_PASSWORD} <<< "SHOW MASTER STATUS")
+
 # binlog 文件名字, 對應 File 字段, 值如：my.000003
 CURRENT_LOG=`echo $MY_STATUS | awk '{print $6}'`
+
 # binlog 位置, 對應 Position 字段, 值如：156
 CURRENT_POS=`echo $MY_STATUS | awk '{print $7}'`
 ```
@@ -29,11 +31,11 @@ docker exec -i mysql_replication_slave_1 mysql -uroot -p${MY_ROOT_PASSWORD} <<< 
 docker exec -i mysql_replication_slave_1 mysql -uroot -p${MY_ROOT_PASSWORD} <<< "SHOW SLAVE STATUS \G"
 ```
 
-#### Test
+#### Check
 ```
 docker exec -i mysql_replication_master_1 mysql -uroot -p${MY_ROOT_PASSWORD} ${MY_DATABASE} <<< "CREATE TABLE code(code int); INSERT INTO code VALUES (100), (200)"
 docker exec -i mysql_replication_slave_1 mysql -uroot -p${MY_ROOT_PASSWORD} ${MY_DATABASE} <<< "SELECT * FROM code \G"
 ```
 
-#### New Way - gtid_mode
+### New Way - gtid_mode
 https://github.com/chanjarster/mysql-master-slave-docker-example
